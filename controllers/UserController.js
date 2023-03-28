@@ -1,11 +1,12 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { validationResult } from "express-validator";
+import { validationResult } from "express-validator"; 
 
 import UserModel from "../models/User.js";
 
 export const register = async (req, res) => {
 	try {
+
 		const { email, password, fullName, avatarUrl } = req.body;
 
 		const errors = validationResult(req);
@@ -54,6 +55,14 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => { 
 	try {
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(400).json({
+				success: false,
+				message: "Ошибка при вводе данных"
+			});
+		}
+		
 		const { email, password } = req.body;
 		const user =  await UserModel.findOne({email:'bulat@mail.ru'})
 
@@ -67,7 +76,7 @@ export const login = async (req, res) => {
 		const isValidPass = await bcrypt.compare(password, user._doc.passwordHash);
 		if (!isValidPass) {
 			return res.status(404).json({
-				success: true,
+				success: false,
 				message: "Неверный логин или пароль",
 			})
 		}

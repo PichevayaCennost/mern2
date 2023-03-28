@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 
 export default (req, res, next) => {
-    const token = req.headers.authorization.substring(7);
+    const token = (req.headers.authorization?.substring(7))
     
     if (token) {
         try {
